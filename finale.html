@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Finale | ICT Missie</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="shell">
+  <div class="top">
+    <a class="logo" href="index.html"><img src="https://ict-missie-ter-aa.chatgpt-werk-1869.chatgpt.site/ter-aa-logo.png" alt="Ter AA"></a>
+    <div class="step">Finale</div>
+  </div>
+
+  <section class="card">
+    <div class="eyebrow">ICT Missie</div>
+    <h1>Open het systeem</h1>
+    <p class="intro">Vul de vier cijfers in de volgorde Support → Netwerkbeheer → Cybersecurity → Programmeren.</p>
+
+    <div class="code-entry">
+      <input maxlength="1" inputmode="numeric">
+      <input maxlength="1" inputmode="numeric">
+      <input maxlength="1" inputmode="numeric">
+      <input maxlength="1" inputmode="numeric">
+    </div>
+
+    <button class="primary" id="check">Controleer de code</button>
+    <div id="result"></div>
+  </section>
+
+  <div class="footer">ICT College · Ter AA</div>
+</main>
+
+<script>
+const inputs = [...document.querySelectorAll(".code-entry input")];
+inputs.forEach((el,i) => el.addEventListener("input", () => {
+  el.value = el.value.replace(/\D/g,"").slice(0,1);
+  if(el.value && i < inputs.length - 1) inputs[i+1].focus();
+}));
+
+document.getElementById("check").onclick = () => {
+  const code = inputs.map(x => x.value).join("");
+  const result = document.getElementById("result");
+  if(code === "4827"){
+    result.innerHTML = `
+      <div class="success">
+        <div class="trophy">🏆</div>
+        <h2>Missie geslaagd!</h2>
+        <p>Het schoolnetwerk is weer beschikbaar.</p>
+      </div>`;
+  } else {
+    result.innerHTML = `<div class="feedback">De code klopt nog niet. Controleer de vier cijfers.</div>`;
+  }
+};
+</script>
+</body>
+</html>

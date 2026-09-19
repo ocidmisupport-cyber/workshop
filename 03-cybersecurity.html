@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cybersecurity: dringende mail | ICT Missie</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="cyber">
+<main class="shell">
+  <div class="top">
+    <a class="logo" href="index.html"><img src="https://ict-missie-ter-aa.chatgpt-werk-1869.chatgpt.site/ter-aa-logo.png" alt="Ter AA"></a>
+    <div class="step">3 van 4</div>
+  </div>
+
+  <section class="card">
+    <div class="chapter-head">
+      <div class="chapter-kicker"><span>🛡️</span>Cybersecurity</div>
+      <h1>Cybersecurity: dringende mail</h1>
+    </div>
+
+    <div class="progress"><span id="progress"></span></div>
+    <div id="number"></div>
+    <div id="story"></div>
+    <div id="question"></div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <div id="taskarea"></div>
+    <button class="primary" id="next" hidden>Volgende</button>
+  </section>
+
+  <div class="footer">ICT College · Ter AA</div>
+</main>
+
+<script>
+const items = [["Noor krijgt een mail: 'Je account wordt vandaag verwijderd. Klik NU!'", "Wat is een eerste waarschuwingssignaal?", ["Tijdsdruk en dreigende taal", "Een logo", "Een normale begroeting"], 0, "Phishing probeert je vaak snel te laten handelen."], ["De afzender lijkt op school, maar het adres eindigt op een vreemd domein.", "Wat doe je?", ["Niet klikken en het adres controleren", "Je wachtwoord terugmailen", "De mail naar iedereen sturen"], 0, "Kijk naar het echte afzenderadres."], ["TASK", "Doe-opdracht", ["Noem samen vier kenmerken waaraan je een verdachte mail kunt herkennen."], 0, ""], ["De tekst van een link zegt ter-aa.nl, maar de echte bestemming is anders.", "Wat betekent dat?", ["De link kan misleidend zijn", "De batterij is leeg", "De wifi is sneller"], 0, "De zichtbare linktekst hoeft niet gelijk te zijn aan de bestemming."], ["Een website vraagt onverwacht om je schoolwachtwoord.", "Wat is verstandig?", ["Stoppen en zelf naar de officiële site gaan", "Het wachtwoord invullen om te testen", "Het wachtwoord delen"], 0, "Gebruik bij twijfel een bekende officiële route."], ["TASK", "Doe-opdracht", ["Maak mondeling één korte waarschuwing voor medeleerlingen over verdachte mails."], 0, ""], ["Je hebt toch op een verdachte link geklikt maar niets ingevuld.", "Wat doe je?", ["Melden en controleren", "Doen alsof er niets gebeurd is", "De link bewaren"], 0, "Snel melden helpt risico te beperken."], ["Je wilt accounts extra beschermen.", "Welke maatregel helpt?", ["MFA", "Kortere wachtwoorden", "Overal hetzelfde wachtwoord"], 0, "MFA voegt een extra controle toe."]];
+const digit = "2";
+const nextFile = "04-programmeren.html";
+const nextLabel = "Naar Programmeren";
+let current = 0;
+
+const number = document.getElementById("number");
+const story = document.getElementById("story");
+const question = document.getElementById("question");
+const choices = document.getElementById("choices");
+const feedback = document.getElementById("feedback");
+const taskarea = document.getElementById("taskarea");
+const next = document.getElementById("next");
+const progress = document.getElementById("progress");
+
+function render(){
+  progress.style.width = ((current / items.length) * 100) + "%";
+  feedback.textContent = "";
+  taskarea.innerHTML = "";
+  choices.innerHTML = "";
+  next.hidden = true;
+
+  if(current >= items.length){
+    progress.style.width = "100%";
+    number.textContent = "Hoofdstuk afgerond";
+    story.innerHTML = "Bewaar dit cijfer voor de eindcode.";
+    question.textContent = "";
+    choices.innerHTML = "";
+    feedback.textContent = "";
+    taskarea.innerHTML = `<div class="codebox"><div>Jouw cijfer</div><div class="digit">${digit}</div></div>`;
+    next.textContent = nextLabel;
+    next.hidden = false;
+    next.onclick = () => location.href = nextFile;
+    return;
+  }
+
+  const x = items[current];
+  number.textContent = `Onderdeel ${current+1} van ${items.length}`;
+
+  if(x[0] === "TASK"){
+    story.textContent = "Jullie opdracht";
+    question.textContent = x[1];
+    taskarea.innerHTML = `<textarea placeholder="Schrijf hier eventueel jullie antwoord..."></textarea>`;
+    const note = document.createElement("div");
+    note.className = "note";
+    note.style.marginTop = "10px";
+    note.textContent = x[2][0];
+    taskarea.appendChild(note);
+    next.textContent = "Opdracht klaar";
+    next.hidden = false;
+    next.onclick = advance;
+    return;
+  }
+
+  story.textContent = x[0];
+  question.textContent = x[1];
+
+  x[2].forEach((answer, idx) => {
+    const b = document.createElement("button");
+    b.className = "choice";
+    b.textContent = answer;
+    b.onclick = () => checkAnswer(idx, b);
+    choices.appendChild(b);
+  });
+}
+
+function checkAnswer(idx, button){
+  const x = items[current];
+  if(idx === x[3]){
+    button.classList.add("good");
+    feedback.textContent = "Goed. " + x[4];
+    [...choices.children].forEach(b => b.disabled = true);
+    next.textContent = "Volgende";
+    next.hidden = false;
+    next.onclick = advance;
+  } else {
+    button.classList.add("bad");
+    feedback.textContent = "Nog niet. " + x[4] + " Probeer dezelfde vraag opnieuw.";
+  }
+}
+
+function advance(){
+  current++;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
