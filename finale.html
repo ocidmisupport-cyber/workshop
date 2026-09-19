@@ -84,6 +84,121 @@ body{display:grid;place-items:center;min-height:100svh}
 
 .robot-preview{display:block;color:inherit;text-decoration:none;margin-bottom:18px}.robot-preview .maze{display:grid;width:min(100%,230px);margin:4px auto 12px;gap:5px}.robot-preview .cell{font-size:1.4rem}.robot-preview .primary{margin-top:8px}.robot-back{display:block;color:var(--ice);font-size:.85rem;margin:0 0 12px;text-underline-offset:4px}
 
+
+/* ===== Finale scrollvrij ===== */
+.shell{
+  overflow:hidden !important;
+}
+
+.card{
+  overflow:hidden !important;
+  padding:12px 10px !important;
+}
+
+.card .eyebrow{
+  font-size:.62rem !important;
+}
+
+.card h1{
+  font-size:1.35rem !important;
+  line-height:1.05 !important;
+  margin:5px 0 6px !important;
+}
+
+.card .intro{
+  font-size:.72rem !important;
+  line-height:1.25 !important;
+  margin:0 0 8px !important;
+}
+
+.code-entry,
+.code{
+  margin:8px 0 !important;
+  gap:5px !important;
+}
+
+.code-entry input,
+.code input{
+  width:42px !important;
+  height:48px !important;
+  min-width:0 !important;
+  padding:0 !important;
+  font-size:1.35rem !important;
+  border-radius:9px !important;
+}
+
+.primary{
+  min-height:40px !important;
+  padding:8px 9px !important;
+  margin-top:7px !important;
+  font-size:.74rem !important;
+  line-height:1.15 !important;
+}
+
+#result{
+  margin-top:6px !important;
+}
+
+.success{
+  padding:4px 0 !important;
+}
+
+.success .trophy{
+  font-size:2.5rem !important;
+  line-height:1 !important;
+  margin:0 0 4px !important;
+}
+
+.success h2{
+  font-size:.95rem !important;
+  line-height:1.1 !important;
+  margin:3px 0 4px !important;
+}
+
+.success p{
+  font-size:.68rem !important;
+  line-height:1.2 !important;
+  margin:0 !important;
+}
+
+.feedback{
+  font-size:.68rem !important;
+  line-height:1.2 !important;
+  margin:6px 0 !important;
+}
+
+.feedback:not(:empty){
+  padding:7px !important;
+  margin:6px 0 !important;
+}
+
+#opleidingenBtn{
+  min-height:38px !important;
+  padding:7px 8px !important;
+  margin-top:6px !important;
+  font-size:.70rem !important;
+}
+
+.footer{
+  margin-top:4px !important;
+  font-size:.58rem !important;
+}
+
+@media(max-width:359px){
+  .card{
+    padding:10px 8px !important;
+  }
+  .card h1{
+    font-size:1.22rem !important;
+  }
+  .code-entry input,
+  .code input{
+    width:38px !important;
+    height:44px !important;
+    font-size:1.2rem !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -108,7 +223,7 @@ body{display:grid;place-items:center;min-height:100svh}
 
     <button class="primary" id="check">Controleer de code</button>
     <div id="result"></div>
-<a class="primary" id="opleidingenBtn" href="opleidingen.html" hidden style="margin-top:12px">
+<a class="primary" id="opleidingenBtn" href="05-ict-opleidingen-pulldown.html" hidden style="margin-top:12px">
   Bekijk de ICT-opleidingen →
 </a>
   </section>
