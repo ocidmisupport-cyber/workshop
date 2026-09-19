@@ -411,16 +411,17 @@ const next = document.getElementById("next");
 const progress = document.getElementById("progress");
 
 
+const taskAttempts = {};
 const taskRules = {
   3: {
     minWords: 10,
     required: ["testen", "vergelijken", "conclusie"]
   },
   6: {
-    minWords: 24,
-    minQuestions: 3,
-    helperWords: ["wat", "waar", "hoe", "werkt", "gebeurt", "camera", "qr", "code", "telefoon", "andere", "probleem", "antwoord", "vertelt", "testen", "controleren"],
-    minHelpers: 5
+    minWords: 14,
+    minQuestions: 2,
+    helperWords: ["wat", "waar", "hoe", "werkt", "gebeurt", "camera", "qr", "code", "telefoon", "andere", "probleem", "testen", "controleren"],
+    minHelpers: 3
   }
 };
 
@@ -448,8 +449,19 @@ function validateTask(){
   const words = wordList(raw);
   const rule = taskRules[current] || { minWords: 8 };
 
+  taskAttempts[current] = (taskAttempts[current] || 0) + 1;
+  const attempt = taskAttempts[current];
+
+  const helpForSam = () => {
+    if(current !== 6) return "";
+    if(attempt === 1){
+      return " Hulp: twee goede vragen zijn al genoeg. Denk bijvoorbeeld aan wat Sam precies ziet en of de camera bij iets anders wel werkt.";
+    }
+    return " Extra hulp: schrijf bijvoorbeeld: 'Wat gebeurt er als je de QR-code in beeld brengt?' en 'Werkt je camera bij gewone foto's?' Zet er kort bij wat elk antwoord je vertelt.";
+  };
+
   if(words.length < (rule.minWords || 0)){
-    feedback.textContent = `Schrijf iets uitgebreider: minimaal ${rule.minWords} echte woorden.`;
+    feedback.textContent = `Schrijf nog iets meer: ongeveer ${rule.minWords} echte woorden is genoeg.` + helpForSam();
     area && area.focus();
     return;
   }
@@ -457,7 +469,7 @@ function validateTask(){
   if(rule.required){
     const missing = rule.required.filter(term => !text.includes(normalizeText(term)));
     if(missing.length){
-      feedback.textContent = "Je mist nog belangrijke begrippen: " + missing.join(", ") + ".";
+      feedback.textContent = "Je mist nog: " + missing.join(", ") + ".";
       area && area.focus();
       return;
     }
@@ -466,7 +478,7 @@ function validateTask(){
   if(rule.minQuestions){
     const questionCount = (raw.match(/\?/g) || []).length;
     if(questionCount < rule.minQuestions){
-      feedback.textContent = `Schrijf minimaal ${rule.minQuestions} echte vragen en zet achter elke vraag een vraagteken.`;
+      feedback.textContent = `Schrijf minimaal ${rule.minQuestions} vragen met een vraagteken.` + helpForSam();
       area && area.focus();
       return;
     }
@@ -475,13 +487,13 @@ function validateTask(){
   if(rule.helperWords){
     const matches = rule.helperWords.filter(term => text.includes(normalizeText(term))).length;
     if(matches < (rule.minHelpers || 0)){
-      feedback.textContent = "Gebruik duidelijke Nederlandse zinnen die echt over de storing gaan.";
+      feedback.textContent = "Maak duidelijk dat je echt Sam zijn QR-probleem onderzoekt." + helpForSam();
       area && area.focus();
       return;
     }
   }
 
-  feedback.textContent = "Prima. Jullie antwoord bevat voldoende inhoud.";
+  feedback.textContent = "Prima. Dit is voldoende om verder te gaan.";
   setTimeout(advance, 300);
 }
 
