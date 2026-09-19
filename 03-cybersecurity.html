@@ -411,14 +411,17 @@ const next = document.getElementById("next");
 const progress = document.getElementById("progress");
 
 
+const taskAttempts = {};
 const taskRules = {
   2: {
-    minWords: 14,
-    required: ["laptop", "access point", "switch", "router", "internet"]
+    minWords: 10,
+    helperWords: ["afzender", "adres", "domein", "link", "taal", "tijdsdruk", "mail", "url"],
+    minHelpers: 2
   },
   5: {
-    minWords: 14,
-    required: ["access point", "switch", "router"]
+    minWords: 8,
+    helperWords: ["phishing", "link", "afzender", "domein", "niet klikken", "melden", "wachtwoord", "mail"],
+    minHelpers: 2
   }
 };
 
@@ -444,7 +447,7 @@ function validateTask(){
   const raw = area ? area.value.trim() : "";
   const text = normalizeText(raw);
   const words = wordList(raw);
-  const rule = taskRules[current] || { minWords: 8 };
+  const rule = taskRules[current] || { minWords: 6, helperWords: [], minHelpers: 0 };
 
   taskAttempts[current] = (taskAttempts[current] || 0) + 1;
   const attempt = taskAttempts[current];
@@ -452,44 +455,46 @@ function validateTask(){
   function hint(){
     if(current === 2){
       if(attempt === 1){
-        return " Hint 1: kijk naar wie de mail echt verstuurt en naar welk webadres de knop gaat.";
+        return " Hint 1: kijk naar de afzender en naar welk webadres de knop gaat.";
       }
       if(attempt === 2){
-        return " Hint 2: noem minstens drie van deze punten: afzenderadres, domein, link, taalgebruik, tijdsdruk.";
+        return " Hint 2: noem bijvoorbeeld afzenderadres, domein, link, taalgebruik of tijdsdruk.";
       }
-      return " Hint 3: voorbeeldrichting: 'Ik controleer het echte afzenderadres, het domein van de link en of de mail mij onder druk zet om snel te klikken.'";
+      return " Hint 3: voorbeeld: 'Ik controleer het afzenderadres, het domein van de link en of de mail mij onder druk zet om snel te klikken.'";
     }
-
     if(current === 5){
       if(attempt === 1){
-        return " Hint 1: je waarschuwing moet zeggen waaraan je phishing herkent én wat je veilig moet doen.";
+        return " Hint 1: noem waaraan je phishing herkent én wat je veilig moet doen.";
       }
       if(attempt === 2){
-        return " Hint 2: gebruik bijvoorbeeld woorden als verdachte link, afzender, niet klikken en melden.";
+        return " Hint 2: denk aan verdachte link, afzender controleren, niet klikken en melden.";
       }
-      return " Hint 3: voorbeeldrichting: 'Klik niet op verdachte links. Controleer de afzender en het domein en meld de mail bij twijfel.'";
+      return " Hint 3: voorbeeld: 'Klik niet op verdachte links. Controleer de afzender en het domein en meld de mail bij twijfel.'";
     }
-
     return "";
   }
 
-  if(words.length < (rule.minWords || 0)){
+  if(words.length < rule.minWords){
     feedback.textContent = `Schrijf nog iets meer: ongeveer ${rule.minWords} echte woorden is genoeg.` + hint();
     area && area.focus();
     return;
   }
 
-  if(rule.helperWords){
-    const matches = rule.helperWords.filter(term => text.includes(normalizeText(term))).length;
-    if(matches < (rule.minHelpers || 0)){
-      feedback.textContent = "Je antwoord mist nog belangrijke inhoud." + hint();
-      area && area.focus();
+  const matches = (rule.helperWords || []).filter(term => text.includes(normalizeText(term))).length;
+
+  if(matches < (rule.minHelpers || 0)){
+    if(attempt >= 3){
+      feedback.textContent = "Dit is voldoende om door te gaan. Bekijk de hint nog even en vergelijk die met jullie antwoord.";
+      setTimeout(advance, 700);
       return;
     }
+    feedback.textContent = "Je antwoord mist nog een paar belangrijke punten." + hint();
+    area && area.focus();
+    return;
   }
 
   feedback.textContent = "Prima. Dit is inhoudelijk voldoende om verder te gaan.";
-  setTimeout(advance, 300);
+  setTimeout(advance, 350);
 }
 
 function render(){
