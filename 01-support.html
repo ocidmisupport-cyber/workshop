@@ -366,6 +366,15 @@ textarea{
   }
 }
 
+
+/* Alleen schermpassing; oorspronkelijke inhoud en opdrachten blijven behouden. */
+html,body{width:100%;height:100%;min-height:0;overflow:hidden}
+body{display:block}
+.shell{position:fixed;left:0;top:0;width:360px;max-width:none;height:auto;
+  min-height:780px;max-height:none;aspect-ratio:auto;margin:0;
+  overflow:visible!important;transform-origin:top left}
+.shell .card{flex:1 0 auto;min-height:0;overflow:visible!important}
+
 </style>
 </head>
 <body>
@@ -569,6 +578,42 @@ function advance(){
 }
 
 render();
+</script>
+<script>
+(() => {
+  const page = document.querySelector('.shell');
+  let frame;
+  function fitPage() {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => {
+      const view = window.visualViewport;
+      const width = view ? view.width : document.documentElement.clientWidth;
+      const height = view ? view.height : document.documentElement.clientHeight;
+      const inset = 8;
+      const naturalWidth = page.offsetWidth;
+      const naturalHeight = Math.max(page.offsetHeight, page.scrollHeight);
+      const scale = Math.min((width - inset * 2) / naturalWidth,
+                             (height - inset * 2) / naturalHeight, 1.35);
+      page.style.transform = `scale(${Math.max(0.1, scale)})`;
+      page.style.left = `${(view ? view.offsetLeft : 0) + (width - naturalWidth * scale) / 2}px`;
+      page.style.top = `${(view ? view.offsetTop : 0) + (height - naturalHeight * scale) / 2}px`;
+    });
+  }
+  window.addEventListener('resize', fitPage);
+  window.addEventListener('pageshow', fitPage);
+  window.addEventListener('load', fitPage);
+  if (window.visualViewport) {
+    visualViewport.addEventListener('resize', fitPage);
+    visualViewport.addEventListener('scroll', fitPage);
+  }
+  new ResizeObserver(fitPage).observe(page);
+  // Meet opnieuw zodra feedback, opdrachten of opleidingsinformatie veranderen.
+  new MutationObserver(fitPage).observe(page.querySelector('.card'), {
+    childList: true, subtree: true, characterData: true, attributes: true
+  });
+  if (document.fonts) document.fonts.ready.then(fitPage);
+  fitPage();
+})();
 </script>
 </body>
 </html>
